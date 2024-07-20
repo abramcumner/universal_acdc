@@ -1058,7 +1058,12 @@ sub prepare_graph_points {
 	foreach my $object (@{$self->{alife_objects}}) {
 		$object->{cse_object}->{flags} |= FL_LEVEL_SPAWN;
 		next if (ref($object->{cse_object}) ne 'se_level_changer');
-		@{$graph->{vertices}}[$object->{cse_object}->{dest_game_vertex_id}]->{name} = $object->{cse_object}->{dest_graph_point};
+		if ($object->{cse_object}->{dest_game_vertex_id} == 65535) {
+			print "object $object->{cse_object}->{name} has invalid dest_game_vertex_id[65535]\n";
+		}
+		else {
+			@{$graph->{vertices}}[$object->{cse_object}->{dest_game_vertex_id}]->{name} = $object->{cse_object}->{dest_graph_point};
+		}
 	}
 	foreach my $level (values %{$graph->{level_by_guid}}) {
 		my $level_spawn = all_spawn->new();
