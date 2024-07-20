@@ -1928,6 +1928,7 @@ sub scan_system {
 	foreach my $l (@$files) {
 		$l = $stalker_path.'\\'.$l;
 	}
+	push @$files, $stalker_path.'\\'.'system.ltx';
 TRY:
 	$flag = 0;
 	foreach my $file (@$files) {

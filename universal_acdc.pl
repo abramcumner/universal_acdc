@@ -1,5 +1,7 @@
 # S.T.A.L.K.E.R *.spawn files unpacker
 # Update history:
+# 1.39:
+#	[!] add scanning sections from system.ltx
 # 1.38:
 #	[!] fix release LA spawn unpacking
 #	[!] fix parse and convert
