@@ -868,6 +868,7 @@ sub pack_properties {
 	foreach my $p (@_) {
 #print "$p->{name} = ";
 		my $template = template_for_scalar->{$p->{type}};
+		($p->{type} eq 'sz')			&& do {$self->_pack_string($container, $p); next;};
 		defined $template				&& do {$self->_pack_scalar($template, $container, $p); next;};
 		($p->{type} eq 'u24')			&& do {$self->_pack_u24($container, $p); next;};
 		($p->{type} =~ /^l/)			&& do {$self->_pack_complex($container, $p); next;};
@@ -894,6 +895,11 @@ sub pack_properties {
 		($p->{type} eq 'times')			&& do {$self->_pack_times($container, $p); next;};
 		$self->_pack_vector($container, $p);
 	}
+}
+sub _pack_string {
+	my ($self, $container, $p) = @_;
+	$container->{$p->{name}} =~ s/\n/\r\n/g;
+	$self->pack('Z*', $container->{$p->{name}});
 }
 sub _pack_scalar {
 	my ($self, $template, $container, $p) = @_;
