@@ -1,0 +1,2 @@
+vertex test.txt
+pause
