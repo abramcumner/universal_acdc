@@ -1388,7 +1388,7 @@ use Cwd;
 #use diagnostics;
 $SIG{__WARN__} = sub {warn(@_);};
 
-my $VERSION = '1.38';
+my $VERSION = '1.40';
 
 # creating all_spawn object
 my $spawn = all_spawn->new();
