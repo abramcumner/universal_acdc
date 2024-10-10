@@ -1042,7 +1042,7 @@ sub export_graph {
 	my $fn = 'section4.bin';
 	my $bin_fh = IO::File->new($fn, 'w') or fail("$fn: $!\n");
 	binmode $bin_fh;
-	$bin_fh->write(${$self->{graph_data}}, length(${$self->{graph_data}}));
+	$bin_fh->write($self->{graph_data}, length($self->{graph_data}));
 	$bin_fh->close();
 	my $fh = $if->{fh};
 	print $fh "[graph]\nbinary_files = $fn\n\n";
