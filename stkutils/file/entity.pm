@@ -114,12 +114,17 @@ sub read_m_spawn {
 		# soc
 		bless $self->{cse_object}, 'cse_alife_item_weapon_magazined' if $sName =~ /ak74u|vintore/;
 	}
+	# handle wrong classes for weapon|zone_teleport_monolith in ver 121(LA DC)
+	if ($self->{cse_object}->{version} == 121){
+		bless $self->{cse_object}, 'cse_alife_item_weapon_magazined_w_gl' if $sName =~ /wpn_l85/;
+		bless $self->{cse_object}, 'cse_alife_custom_zone'                if $sName =~ /zone_teleport_monolith/;
+	}
 	$self->init_object();
 	$self->{cse_object}->state_read($packet);
 	# shut up warnings for smart covers with extra data (acdccop bug)
 	$packet->resid() == 0 or return if ((ref($self->{cse_object}) eq 'se_smart_cover') && ($packet->resid() % 2 == 0));
 	# correct reading check
-	$packet->resid() == 0 or warn('state data left ['.$packet->resid().'] in entity '.$self->{cse_object}->{name});
+	$packet->resid() == 0 or warn('state data left ['.$packet->resid().'] in entity '.$self->{cse_object}->{name}.':'.ref($self->{cse_object}));
 }
 sub read_m_update {
 	my $self = shift;
@@ -516,7 +521,7 @@ sub state_read {
 	if ($self->{s_flags} & FL_SPAWN_DESTROY_ON_SPAWN) {
 		$packet->unpack_properties($self, (properties_info)[12]);
 	}
-	if ($self->{version} > 120) {
+	if ($self->{version} > 121) {
 		$packet->unpack_properties($self, (properties_info)[13]);
 	}
 	if ($self->{version} > 69) {
@@ -555,7 +560,7 @@ sub state_write {
 	if ($self->{s_flags} & FL_SPAWN_DESTROY_ON_SPAWN) {
 		$packet->pack_properties($self, (properties_info)[12]);
 	}
-	if ($self->{version} > 120) {
+	if ($self->{version} > 121) {
 		$packet->pack_properties($self, (properties_info)[13]);
 	}
 	if ($self->{version} > 69) {
@@ -601,7 +606,7 @@ sub state_import {
 	if (($_[0]->{s_flags} & FL_SPAWN_DESTROY_ON_SPAWN) && ($_[3] == FULL_IMPORT)) {
 		$_[1]->import_properties($_[2], $_[0], (properties_info)[12]);
 	}
-	if ($_[0]->{version} > 120) {
+	if ($_[0]->{version} > 121) {
 		$_[1]->import_properties($_[2], $_[0], (properties_info)[13]);
 	}
 	if (($_[0]->{version} > 69) && ($_[3] == FULL_IMPORT)) {
@@ -629,7 +634,7 @@ sub state_export {
 	if ($_[0]->{s_flags} & FL_SPAWN_DESTROY_ON_SPAWN) {
 		$_[1]->export_properties(undef, $_[0], (properties_info)[12]);
 	}
-	if ($_[0]->{version} > 120) {
+	if ($_[0]->{version} > 121) {
 		$_[1]->export_properties(undef, $_[0], (properties_info)[13]);
 	}
 	if ($_[0]->{version} > 69) {
@@ -1523,7 +1528,7 @@ sub state_read {
 	if ($_[0]->{version} > 96) {
 		$_[1]->unpack_properties($_[0], (properties_info)[22]);
 	}
-	if ($_[0]->{version} > 118) {
+	if ($_[0]->{version} > 121) {
 		$_[1]->unpack_properties($_[0], (properties_info)[23..25]);
 	}
 }
@@ -1574,7 +1579,7 @@ sub state_write {
 	if ($_[0]->{version} > 96) {
 		$_[1]->pack_properties($_[0], (properties_info)[22]);
 	}
-	if ($_[0]->{version} > 118) {
+	if ($_[0]->{version} > 121) {
 		$_[1]->pack_properties($_[0], (properties_info)[23..25]);
 	}
 }
@@ -1625,7 +1630,7 @@ sub state_import {
 	if ($_[0]->{version} > 96) {
 		$_[1]->import_properties($_[2], $_[0], (properties_info)[22]);
 	}
-	if ($_[0]->{version} > 118) {
+	if ($_[0]->{version} > 121) {
 		$_[1]->import_properties($_[2], $_[0], (properties_info)[23..25]);
 	}
 }
@@ -1676,7 +1681,7 @@ sub state_export {
 	if ($_[0]->{version} > 96) {
 		$_[1]->export_properties(undef, $_[0], (properties_info)[22]);
 	}
-	if ($_[0]->{version} > 118) {
+	if ($_[0]->{version} > 121) {
 		$_[1]->export_properties(undef, $_[0], (properties_info)[23..25]);
 	}
 }
@@ -1896,11 +1901,12 @@ sub state_export {
 package cse_alife_car;
 use strict;
 use constant properties_info => (
-	{ name => 'cse_alife_car__unk1_f32', type => 'f32', default => 1.0 },	
-	{ name => 'health', type => 'f32', default => 1.0 },	
-	{ name => 'g_team', type => 'u8', default => 0 },	
-	{ name => 'g_squad', type => 'u8', default => 0 },	
-	{ name => 'g_group', type => 'u8', default => 0 },		
+	{ name => 'cse_alife_car__unk1_f32', type => 'f32', default => 1.0 },
+	{ name => 'health', type => 'f32', default => 1.0 },
+	{ name => 'g_team', type => 'u8', default => 0 },
+	{ name => 'g_squad', type => 'u8', default => 0 },
+	{ name => 'g_group', type => 'u8', default => 0 },
+	{ name => 'fuel', type => 'f32', default => 1.0 },
 );
 sub init {
 	cse_alife_dynamic_object_visual::init(@_);
@@ -1923,9 +1929,9 @@ sub state_read {
 	if ($_[0]->{version} > 92) {
 		$_[1]->unpack_properties($_[0], (properties_info)[1]);
 	}
-#	if ($_[0]->{health} > 1.0) {
-#		$_[0]->{health} *= 0.01;
-#	}
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->unpack_properties($_[0], (properties_info)[5]);
+	}
 }
 sub state_write {
 	if (($_[0]->{version} < 8) || ($_[0]->{version} > 16)) {
@@ -1943,9 +1949,9 @@ sub state_write {
 	if ($_[0]->{version} > 92) {
 		$_[1]->pack_properties($_[0], (properties_info)[1]);
 	}
-#	if ($_[0]->{health} > 1.0) {
-#		$_[0]->{health} *= 0.01;
-#	}
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->pack_properties($_[0], (properties_info)[5]);
+	}
 }
 sub state_import {
 	if (($_[0]->{version} < 8) || ($_[0]->{version} > 16)) {
@@ -1963,6 +1969,9 @@ sub state_import {
 	if ($_[0]->{version} > 92) {
 		$_[1]->import_properties($_[2], $_[0], (properties_info)[1]);
 	}
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->import_properties($_[2], $_[0], (properties_info)[5]);
+	}
 }
 sub state_export {
 	if (($_[0]->{version} < 8) || ($_[0]->{version} > 16)) {
@@ -1979,6 +1988,9 @@ sub state_export {
 	}
 	if ($_[0]->{version} > 92) {
 		$_[1]->export_properties(undef, $_[0], (properties_info)[1]);
+	}
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->export_properties(undef, $_[0], (properties_info)[5]);
 	}
 }
 #######################################################################
@@ -4222,7 +4234,8 @@ use constant upd_properties_info => (
 	{ name => 'upd:condition',			type => 'f32', default => 0  },
 	{ name => 'upd:timestamp',			type => 'u32', default => 0  },
 	{ name => 'upd:num_items',			type => 'u16', default => 0  }, #old format
-	{ name => 'upd:cse_alife_inventory_item__unk1_u8',			type => 'u8', default => 0  },
+	{ name => 'upd:cse_alife_inventory_item__unk1_u8',	type => 'u8', default => 0  },
+	{ name => 'upd:condition',			type => 'q8', default => 0  }, # LA DC
 );
 sub init {
 	stkutils::file::entity::init_properties($_[0], properties_info);
@@ -4232,7 +4245,7 @@ sub state_read {
 	if ($_[0]->{version} > 52) {
 		$_[1]->unpack_properties($_[0], (properties_info)[0]);
 	}
-	if ($_[0]->{version} > 123) {
+	if ($_[0]->{version} > 119) {
 		$_[1]->unpack_properties($_[0], (properties_info)[1]);
 	}
 }
@@ -4240,7 +4253,7 @@ sub state_write {
 	if ($_[0]->{version} > 52) {
 		$_[1]->pack_properties($_[0], (properties_info)[0]);
 	}
-	if ($_[0]->{version} > 123) {
+	if ($_[0]->{version} > 119) {
 		$_[1]->pack_properties($_[0], (properties_info)[1]);
 	}
 }
@@ -4248,7 +4261,7 @@ sub state_import {
 	if ($_[0]->{version} > 52) {
 		$_[1]->import_properties($_[2], $_[0], (properties_info)[0]);
 	}
-	if ($_[0]->{version} > 123) {
+	if ($_[0]->{version} > 119) {
 		$_[1]->import_properties($_[2], $_[0], (properties_info)[1]);
 	}
 }
@@ -4256,7 +4269,7 @@ sub state_export {
 	if ($_[0]->{version} > 52) {
 		$_[1]->export_properties(__PACKAGE__, $_[0], (properties_info)[0]);
 	}
-	if ($_[0]->{version} > 123) {
+	if ($_[0]->{version} > 119) {
 		$_[1]->export_properties(undef, $_[0], (properties_info)[1]);
 	}
 }
@@ -4276,6 +4289,8 @@ sub update_read {
 				$_[1]->unpack_properties($_[0], (upd_properties_info)[7]);
 			}
 		}
+	} elsif ($_[0]->{version} == 121) { # LA DC
+		$_[1]->unpack_properties($_[0], (upd_properties_info)[15]);
 	} elsif (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5)) {
 		$_[1]->unpack_properties($_[0], (upd_properties_info)[0]);
 		if ($_[0]->{'upd:num_items'} != 0) {
@@ -4327,6 +4342,8 @@ sub update_write {
 				$_[1]->pack_properties($_[0], (upd_properties_info)[7]);
 			}
 		}
+	} elsif ($_[0]->{version} == 121) { # LA DC
+		$_[1]->pack_properties($_[0], (upd_properties_info)[15]);
 	} elsif (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5)) {
 	my $flags = ($_[0]->{'upd:num_items'});
 	my $mask = $flags >> 5;
@@ -4374,6 +4391,8 @@ sub update_import {
 				$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[7]);
 			}
 		}
+	} elsif ($_[0]->{version} == 121) { # LA DC
+		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[15]);
 	} elsif (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5)) {
 		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[0]);
 		if ($_[0]->{'upd:num_items'} != 0) {
@@ -4423,6 +4442,8 @@ sub update_export {
 				$_[1]->export_properties(undef, $_[0], (upd_properties_info)[7]);
 			}
 		}
+	} elsif ($_[0]->{version} == 121) { # LA DC
+		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[15]);
 	} elsif (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5)) {
 		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[0]);
 		if ($_[0]->{'upd:num_items'} != 0) {
@@ -5090,6 +5111,52 @@ sub update_export {
 	$_[1]->export_properties(undef, $_[0], upd_properties_info);
 }
 #######################################################################
+package cse_alife_eatable_item;
+use strict;
+use constant upd_properties_info => (
+	{ name => 'num_portions', type => 'u16', default => 0 },
+);
+sub init {
+	cse_alife_item::init(@_);
+	stkutils::file::entity::init_properties($_[0], upd_properties_info);
+}
+sub state_read {
+	cse_alife_item::state_read(@_);
+}
+sub state_write {
+	cse_alife_item::state_write(@_);
+}
+sub state_import {
+	cse_alife_item::state_import(@_);
+}
+sub state_export {
+	cse_alife_item::state_export(@_);
+}
+sub update_read {
+	cse_alife_item::update_read(@_);
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->unpack_properties($_[0], upd_properties_info);
+	}
+}
+sub update_write {
+	cse_alife_item::update_write(@_);
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->pack_properties($_[0], upd_properties_info);
+	}
+}
+sub update_import {
+	cse_alife_item::update_import(@_);
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->import_properties($_[2], $_[0], upd_properties_info);
+	}
+}
+sub update_export {
+	cse_alife_item::update_export(@_);
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->export_properties(undef, $_[0], upd_properties_info);
+	}
+}
+#######################################################################
 package cse_alife_item_weapon;
 use strict;
 use constant flAddonScope	=> 0x01;
@@ -5115,6 +5182,7 @@ use constant upd_properties_info => (
 	{ name => 'upd:ammo_current',	type => 'u16', default => 0  },
 	{ name => 'upd:position',	type => 'f32v3', default => [0,0,0]  },
 	{ name => 'upd:timestamp',	type => 'u32', default => 0  },
+	{ name => 'upd:cur_scope',	type => 'u8', default => 0  },
 );
 sub init {
 	cse_alife_item::init(@_);
@@ -5179,11 +5247,15 @@ sub state_export {
 }
 sub update_read {
 	cse_alife_item::update_read(@_);
-	if (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5)) {
+	if (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5) && ($_[0]->{version} != 121)) {
 		$_[1]->unpack_properties($_[0], (upd_properties_info)[0]);
 	}
 	if ($_[0]->{version} > 39) {
-		$_[1]->unpack_properties($_[0], (upd_properties_info)[1..6]);
+		$_[1]->unpack_properties($_[0], (upd_properties_info)[1..2]);
+		if ($_[0]->{version} ==121) { # LA DC
+			$_[1]->unpack_properties($_[0], (upd_properties_info)[10]);
+		}
+		$_[1]->unpack_properties($_[0], (upd_properties_info)[3..6]);
 	} else {
 		$_[1]->unpack_properties($_[0], (upd_properties_info)[9]);
 		$_[1]->unpack_properties($_[0], (upd_properties_info)[1]);
@@ -5195,11 +5267,15 @@ sub update_read {
 }
 sub update_write {
 	cse_alife_item::update_write(@_);
-	if (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5)) {
+	if (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5) && ($_[0]->{version} != 121)) {
 		$_[1]->pack_properties($_[0], (upd_properties_info)[0]);
 	}
 	if ($_[0]->{version} > 39) {
-		$_[1]->pack_properties($_[0], (upd_properties_info)[1..6]);
+		$_[1]->pack_properties($_[0], (upd_properties_info)[1..2]);
+		if ($_[0]->{version} ==121) { # LA DC
+			$_[1]->pack_properties($_[0], (upd_properties_info)[10]);
+		}
+		$_[1]->pack_properties($_[0], (upd_properties_info)[3..6]);
 	} else {
 		$_[1]->pack_properties($_[0], (upd_properties_info)[9]);
 		$_[1]->pack_properties($_[0], (upd_properties_info)[1]);
@@ -5211,11 +5287,15 @@ sub update_write {
 }
 sub update_import {
 	cse_alife_item::update_import(@_);
-	if (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5)) {
+	if (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5) && ($_[0]->{version} != 121)) {
 		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[0]);
 	}
 	if ($_[0]->{version} > 39) {
-		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[1..6]);
+		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[1..2]);
+		if ($_[0]->{version} ==121) { # LA DC
+			$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[10]);
+		}
+		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[3..6]);
 	} else {
 		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[9]);
 		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[1]);
@@ -5227,11 +5307,15 @@ sub update_import {
 }
 sub update_export {
 	cse_alife_item::update_export(@_);
-	if (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5)) {
+	if (($_[0]->{version} >= 118) && ($_[0]->{script_version} > 5) && ($_[0]->{version} != 121)) {
 		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[0]);
 	}
 	if ($_[0]->{version} > 39) {
-		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[1..6]);
+		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[1..2]);
+		if ($_[0]->{version} ==121) { # LA DC
+			$_[1]->export_properties(undef, $_[0], (upd_properties_info)[10]);
+		}
+		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[3..6]);
 	} else {
 		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[9]);
 		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[1]);
@@ -5287,7 +5371,9 @@ sub is_handled {return ($_[0]->{flags} & FL_HANDLED)}
 package cse_alife_item_weapon_magazined_w_gl;
 use strict;
 use constant upd_properties_info => (
-	{ name => 'upd:grenade_mode', type => 'u8', default => 0 },
+	{ name => 'upd:grenade_mode',      type => 'u8', default => 0 },
+	{ name => 'upd:grenade_is_loaded', type => 'u8', default => 0 },
+	{ name => 'upd:grenade_id',        type => 'u8', default => 0 },
 );
 sub init {
 	cse_alife_item_weapon_magazined::init(@_);
@@ -5306,27 +5392,39 @@ sub state_export {
 	cse_alife_item_weapon_magazined::state_export(@_);
 }
 sub update_read {
-	if ($_[0]->{version} >= 118) {
-		$_[1]->unpack_properties($_[0], upd_properties_info);
+	if ($_[0]->{version} >= 118 && $_[0]->{version} != 121) { # except LA DC
+		$_[1]->unpack_properties($_[0], (upd_properties_info)[0]);
 	}
 	cse_alife_item_weapon_magazined::update_read(@_);
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->unpack_properties($_[0], (upd_properties_info)[0..2]);
+	}
 }
 sub update_write {	
-	if ($_[0]->{version} >= 118) {
-		$_[1]->pack_properties($_[0], upd_properties_info);
+	if ($_[0]->{version} >= 118 && $_[0]->{version} != 121) { # except LA DC
+		$_[1]->pack_properties($_[0], (upd_properties_info)[0]);
 	}
 	cse_alife_item_weapon_magazined::update_write(@_);
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->pack_properties($_[0], (upd_properties_info)[0..2]);
+	}
 }
 sub update_import {
 	cse_alife_item_weapon_magazined::update_import(@_);
 	if ($_[0]->{version} >= 118) {
-		$_[1]->import_properties($_[2], $_[0], upd_properties_info);
+		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[0]);
+	}
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->import_properties($_[2], $_[0], (upd_properties_info)[1..2]);
 	}
 }
 sub update_export {
 	cse_alife_item_weapon_magazined::update_export(@_);
-	if ($_[0]->{version} >= 118) {
-		$_[1]->export_properties(undef, $_[0], upd_properties_info);
+	if ($_[0]->{version} >= 118 && $_[0]->{version} != 121) { # except LA DC
+		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[0]);
+	}
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->export_properties(undef, $_[0], (upd_properties_info)[1..2]);
 	}
 }
 #######################################################################
@@ -5787,6 +5885,7 @@ use stkutils::debug qw(fail warn);
 use constant properties_info => (
 	{ name => 'spawned_obj', type => 'l8u16v', default => [] },
 	{ name => 'next_spawn_time_present',	type => 'u8',	default => 0 }, #+#LA
+	{ name => 'respawn_time',	type => 'CTime',default => 0 }, # LA DC
 );
 sub init {
 	cse_alife_smart_zone::init(@_);
@@ -5794,33 +5893,55 @@ sub init {
 }
 sub state_read {
 	cse_alife_smart_zone::state_read(@_);
-	if ($_[0]->{version} >= 116) {
-		$_[1]->unpack_properties($_[0], (properties_info)[0]);
-	}
-	if (($_[1]->resid() == 1)) {# || ($_[0]->{flags} & stkutils::file::entity::FL_LA == stkutils::file::entity::FL_LA)) {  // temporary
-		$_[1]->unpack_properties($_[0], (properties_info)[1]);
-		$_[0]->{flags} |= stkutils::file::entity::FL_LA;
+	if ($_[0]->{version} == 121) { # LA DC
+		if (($_[1]->resid() != 0)) {
+			$_[1]->unpack_properties($_[0], (properties_info)[2]);
+			$_[1]->unpack_properties($_[0], (properties_info)[0]);
+		}
+	} else {
+		if ($_[0]->{version} >= 116) {
+			$_[1]->unpack_properties($_[0], (properties_info)[0]);
+		}
+		if (($_[1]->resid() == 1)) {# || ($_[0]->{flags} & stkutils::file::entity::FL_LA == stkutils::file::entity::FL_LA)) {  // temporary
+			$_[1]->unpack_properties($_[0], (properties_info)[1]);
+			$_[0]->{flags} |= stkutils::file::entity::FL_LA;
+		}
 	}
 }
 sub state_write {
 	cse_alife_smart_zone::state_write(@_);
-	if ($_[0]->{version} >= 116) {
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->pack_properties($_[0], (properties_info)[2]);
 		$_[1]->pack_properties($_[0], (properties_info)[0]);
-	}
-	if ($_[0]->{flags} & stkutils::file::entity::FL_LA == stkutils::file::entity::FL_LA) {
-		$_[1]->pack_properties($_[0], (properties_info)[1]);
+	} else {
+		if ($_[0]->{version} >= 116) {
+			$_[1]->pack_properties($_[0], (properties_info)[0]);
+		}
+		if ($_[0]->{flags} & stkutils::file::entity::FL_LA == stkutils::file::entity::FL_LA) {
+			$_[1]->pack_properties($_[0], (properties_info)[1]);
+		}
 	}
 }
 sub state_import {
 	cse_alife_smart_zone::state_import(@_);
-	if ($_[0]->{version} >= 116) {
-		$_[1]->import_properties($_[2], $_[0], properties_info);
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->import_properties($_[2], $_[0], (properties_info)[2]);
+		$_[1]->import_properties($_[2], $_[0], (properties_info)[0]);
+	} else {
+		if ($_[0]->{version} >= 116) {
+			$_[1]->import_properties($_[2], $_[0], (properties_info)[0..1]);
+		}
 	}
 }
 sub state_export {
 	cse_alife_smart_zone::state_export(@_);
-	if ($_[0]->{version} >= 116) {
-		$_[1]->export_properties(__PACKAGE__, $_[0], properties_info);
+	if ($_[0]->{version} == 121) { # LA DC
+		$_[1]->export_properties(__PACKAGE__, $_[0], (properties_info)[2]);
+		$_[1]->export_properties(__PACKAGE__, $_[0], (properties_info)[0]);
+	} else {
+		if ($_[0]->{version} >= 116) {
+			$_[1]->export_properties(__PACKAGE__, $_[0], (properties_info)[0..1]);
+		}
 	}
 }
 #######################################################################

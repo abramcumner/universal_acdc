@@ -110,6 +110,7 @@ use constant build_versions => (
 	{ version => 124, script_version => 8, build => 'Clear Sky (1.5.04 - 1.5.10)',  graph_build => 'cop', graph_ver => 10},
 	{ version => 123, script_version => 8, build => 'Clear Sky (1.5.03)',  graph_build => 'cop', graph_ver => 10},
 	{ version => 122, script_version => 8, build => 'Clear Sky (1.5.00 - 1.5.02)',  graph_build => 'cop', graph_ver => 10},
+	{ version => 121, script_version => 7, build => 'LA DC',  graph_build => 'soc', graph_ver => 8},
 	{ version => 118, script_version => 7, build => 'Shadow Of Chernobyl (1.0001 or higher)',  graph_build => 'soc', graph_ver => 8},
 	{ version => 118, script_version => 6, build => 'Shadow Of Chernobyl (1.0001 or higher)',  graph_build => 'soc', graph_ver => 8},
 	{ version => 118, script_version => 5, build => 'xrCore build 2559-2947', graph_build => 'soc', graph_ver => 8},

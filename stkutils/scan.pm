@@ -1493,6 +1493,13 @@ use constant section_to_clsid => {
 	'zone_mine_steam_strong' => 'ZS_MBALD',
 	'zone_mine_steam_weak' => 'ZS_MBALD',
 
+# LA DC
+	'peanut_conserva' => 'II_FOOD',
+	'korn_conserva' => 'II_FOOD',
+	'yantar_food' => 'II_FOOD',
+	'sardinia_conserva' => 'II_FOOD',
+	'tushenka_conserva' => 'II_FOOD',
+	'tushenka_conserva' => 'II_FOOD',
 };
 use constant clsid_to_class => {
 	# build 749
@@ -1635,10 +1642,10 @@ W_TZ_CHR => 'unknown',								# deprecated from build 1472
 	EQU_MLTR	=> 'cse_alife_item_custom_outfit',			# deprecated from clear sky
 	EQU_SCIE	=> 'cse_alife_item_custom_outfit',			# deprecated from build 2571 [2006-03-16]
 	EQU_STLK	=> 'cse_alife_item_custom_outfit',			# deprecated from build 2559 [2005-05-04]
-	II_ANTIR	=> 'cse_alife_item',						# deprecated from call of pripyat
+	II_ANTIR	=> 'cse_alife_eatable_item',				# deprecated from call of pripyat, changed class in LA DC
 	II_BREAD	=> 'cse_alife_item',						# deprecated from build 1828 [2004-02-03]
 	II_DOC		=> 'cse_alife_item_document',
-	II_MEDKI	=> 'cse_alife_item',						# deprecated from call of pripyat
+	II_MEDKI	=> 'cse_alife_eatable_item',				# deprecated from call of pripyat, changed class in LA DC
 
 	# build 1567
 	AF_BDROP	=> 'cse_alife_item_artefact',				# deprecated from build 1902
@@ -1668,8 +1675,8 @@ W_TZ_CHR => 'unknown',								# deprecated from build 1472
 	O_SEARCH	=> 'cse_alife_object_projector',
 	
 	# build 1828 [2004-02-03]
-	II_BOTTL	=> 'cse_alife_item',						# deprecated from call of pripyat
-	II_FOOD		=> 'cse_alife_item',						# deprecated from call of pripyat
+	II_BOTTL	=> 'cse_alife_eatable_item',				# deprecated from call of pripyat, changed class in LA DC
+	II_FOOD		=> 'cse_alife_eatable_item',				# deprecated from call of pripyat, changed class in LA DC
 	
 	# build 1844 [2004-02-19]
 	C_HLCPTR	=> 'cse_alife_helicopter',					# deprecated from build 2939
@@ -1744,7 +1751,7 @@ W_TZ_CHR => 'unknown',								# deprecated from build 1472
 	W_STMGUN	=> 'cse_alife_stationary_mgun',	
 	
 	# build 2571 [2006-03-16]
-	II_BANDG	=> 'cse_alife_item',							# deprecated in call of pripyat
+	II_BANDG	=> 'cse_alife_eatable_item',					# deprecated in call of pripyat, changed class in LA DC
 	ON_OFF_G	=> 'cse_alife_online_offline_group',			# deprecated from call of pripyat
 	RE_SPAWN	=> 'se_respawn',								# deprecated in call of pripyat
 	SM_DOG_F	=> 'se_monster',
@@ -1816,7 +1823,7 @@ W_TZ_CHR => 'unknown',								# deprecated from build 1472
 	S_BANDG		=> 'cse_alife_item',
 	S_BOTTL		=> 'cse_alife_item',
 	S_EXPLO		=> 'cse_alife_item_explosive',
-	S_FOOD		=> 'cse_alife_item',
+	S_FOOD		=> 'cse_alife_eatable_item',					# hack fo LA DC
 	S_INVBOX	=> 'cse_alife_inventory_box',
 	S_MEDKI		=> 'cse_alife_item',
 	S_M209		=> 'cse_alife_item_ammo',
