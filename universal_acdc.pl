@@ -1,5 +1,7 @@
 # S.T.A.L.K.E.R *.spawn files unpacker
 # Update history:
+# 1.41:
+#	[+] add spawn LA DC unpacking
 # 1.40:
 #	[!] fix line break characters when splitting all.spawn
 # 1.39:
@@ -1389,7 +1391,7 @@ use Cwd;
 #use diagnostics;
 $SIG{__WARN__} = sub {warn(@_);};
 
-my $VERSION = '1.40';
+my $VERSION = '1.41';
 
 # creating all_spawn object
 my $spawn = all_spawn->new();
