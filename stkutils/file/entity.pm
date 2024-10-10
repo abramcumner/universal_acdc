@@ -131,7 +131,7 @@ sub read_m_update {
 	my ($packet) = @_;
 	cse_abstract::update_read($self->{cse_object}, $packet);
 	UNIVERSAL::can($self->{cse_object}, 'update_read') && do {$self->{cse_object}->update_read($packet)};
-	$packet->resid() == 0 or $self->error(__PACKAGE__.'::read_m_update', __LINE__, '$packet->resid() == 0', 'update data left ['.$packet->resid().'] in entity '.$self->{cse_object}->{name});		
+	$packet->resid() == 0 or $self->error('update data left ['.$packet->resid().'] in entity '.$self->{cse_object}->{name}.':'.$self->{cse_object}->{section_name}.':'.ref($self->{cse_object}));
 }
 sub write {
 	my $self = shift;
