@@ -125,14 +125,14 @@ sub read_m_spawn {
 	# shut up warnings for smart covers with extra data (acdccop bug)
 	$packet->resid() == 0 or return if ((ref($self->{cse_object}) eq 'se_smart_cover') && ($packet->resid() % 2 == 0));
 	# correct reading check
-	$packet->resid() == 0 or warn('state data left ['.$packet->resid().'] in entity '.$self->{cse_object}->{name}.':'.ref($self->{cse_object}));
+	$packet->resid() == 0 or warn('state data left ['.$packet->resid().'] in entity '.$self->{cse_object}->{name}.'('.$self->{cse_object}->{section_name}.') => '.ref($self->{cse_object}));
 }
 sub read_m_update {
 	my $self = shift;
 	my ($packet) = @_;
 	cse_abstract::update_read($self->{cse_object}, $packet);
 	UNIVERSAL::can($self->{cse_object}, 'update_read') && do {$self->{cse_object}->update_read($packet)};
-	$packet->resid() == 0 or $self->error('update data left ['.$packet->resid().'] in entity '.$self->{cse_object}->{name}.':'.$self->{cse_object}->{section_name}.':'.ref($self->{cse_object}));
+	$packet->resid() == 0 or $self->error('update data left ['.$packet->resid().'] in entity '.$self->{cse_object}->{name}.'('.$self->{cse_object}->{section_name}.') => '.ref($self->{cse_object}));
 }
 sub write {
 	my $self = shift;
