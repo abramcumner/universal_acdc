@@ -118,6 +118,7 @@ sub read_m_spawn {
 	if ($self->{cse_object}->{version} == 121){
 		bless $self->{cse_object}, 'cse_alife_item_weapon_magazined_w_gl' if $sName =~ /wpn_l85/;
 		bless $self->{cse_object}, 'cse_alife_custom_zone'                if $sName =~ /zone_teleport_monolith/;
+		bless $self->{cse_object}, 'cse_alife_eatable_item'               if $sName =~ /kolbasa|bread/;
 	}
 	$self->init_object();
 	$self->{cse_object}->state_read($packet);

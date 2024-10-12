@@ -1494,12 +1494,13 @@ use constant section_to_clsid => {
 	'zone_mine_steam_weak' => 'ZS_MBALD',
 
 # LA DC
-	'peanut_conserva' => 'II_FOOD',
-	'korn_conserva' => 'II_FOOD',
-	'yantar_food' => 'II_FOOD',
+	'peanut_conserva'   => 'II_FOOD',
+	'korn_conserva'     => 'II_FOOD',
+	'yantar_food'       => 'II_FOOD',
 	'sardinia_conserva' => 'II_FOOD',
 	'tushenka_conserva' => 'II_FOOD',
 	'tushenka_conserva' => 'II_FOOD',
+	'olives_conserva'   => 'II_FOOD',
 };
 use constant clsid_to_class => {
 	# build 749
