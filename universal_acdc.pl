@@ -1,5 +1,7 @@
 # S.T.A.L.K.E.R *.spawn files unpacker
 # Update history:
+# 1.42:
+#	[+] fix LA DC spawn unpacking
 # 1.41:
 #	[+] add spawn LA DC unpacking
 # 1.40:
@@ -1391,7 +1393,7 @@ use Cwd;
 #use diagnostics;
 $SIG{__WARN__} = sub {warn(@_);};
 
-my $VERSION = '1.41';
+my $VERSION = '1.42';
 
 # creating all_spawn object
 my $spawn = all_spawn->new();

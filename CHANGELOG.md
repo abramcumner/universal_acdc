@@ -1,5 +1,8 @@
 # История правок
 
+## [1.42] - 2024-10-12
+ - [!] доработан разбор спавна LA DC
+
 ## [1.41] - 2024-10-10
  - [+] добавлен разбор спавна LA DC
 
@@ -120,6 +123,7 @@
  - [i] исправлены все неработавшие функции.
  - [+] увеличена скорость выполнения кода, уменьшены требования по памяти.
 
+[1.42]: https://github.com/abramcumner/universal_acdc/compare/1.41...1.42
 [1.41]: https://github.com/abramcumner/universal_acdc/compare/1.40...1.41
 [1.40]: https://github.com/abramcumner/universal_acdc/compare/1.39...1.40
 [1.39]: https://github.com/abramcumner/universal_acdc/compare/1.38...1.39
