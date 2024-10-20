@@ -1998,7 +1998,7 @@ sub state_export {
 package cse_alife_helicopter;
 use strict;
 use constant properties_info => (
-	{ name => 'cse_alife_helicopter__unk1_sz',	type => 'sz', default => '' },
+	{ name => 'startup_animation',		type => 'sz', default => '' },
 	{ name => 'engine_sound',			type => 'sz', default => '' },
 );
 sub init {
