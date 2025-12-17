@@ -953,6 +953,12 @@ use constant way_name_exceptions => {
 	sar_teleport_0000_exit_look		=> 'l12u_sarcofag',
 	sar_teleport_0000_exit_walk		=> 'l12u_sarcofag',
 	val_ambush_dest_look		=> 'l04_darkvalley',
+	heli_idle_move				=> 'l01_escape',
+	heli_sleep					=> 'l01_escape',
+	heli_sleep2					=> 'l01_escape',
+	heli_move_end_1				=> 'l08_yantar',
+	heli_move_end_2				=> 'l08_yantar',
+	heli_death_way				=> 'l12_stancia',
 };
 sub export_way {
 	my $self = shift;
