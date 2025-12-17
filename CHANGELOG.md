@@ -1,5 +1,9 @@
 # История правок
 
+## [1.43] - 2025-12-17
+ - [!] исправлен вылет, если  у level_changer неверный dest_game_vertex_id
+ - [!] добавлена привязка к локациям некоторых путей не на ai-сетке
+
 ## [1.42] - 2024-10-12
  - [!] доработан разбор спавна LA DC
 
@@ -123,6 +127,7 @@
  - [i] исправлены все неработавшие функции.
  - [+] увеличена скорость выполнения кода, уменьшены требования по памяти.
 
+[1.43]: https://github.com/abramcumner/universal_acdc/compare/1.42...1.43
 [1.42]: https://github.com/abramcumner/universal_acdc/compare/1.41...1.42
 [1.41]: https://github.com/abramcumner/universal_acdc/compare/1.40...1.41
 [1.40]: https://github.com/abramcumner/universal_acdc/compare/1.39...1.40
