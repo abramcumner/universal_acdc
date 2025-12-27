@@ -961,6 +961,7 @@ use constant way_name_exceptions => {
 	heli_sleep2					=> 'l01_escape',
 	heli_move_end_1				=> 'l08_yantar',
 	heli_move_end_2				=> 'l08_yantar',
+	heli_stay_3					=> 'l08_yantar',
 	heli_death_way				=> 'l12_stancia',
 };
 sub export_way {
