@@ -1,8 +1,10 @@
 # S.T.A.L.K.E.R *.spawn files unpacker
 # Update history:
+# 1.44:
+#	[+] добавлена привязка к локации путей на l05_bar, лежащих не на ai-сетке
 # 1.43:
 #	[!] исправлен вылет, если  у level_changer неверный dest_game_vertex_id
-#	[!] добавлена привязка к локациям некоторых путей не на ai-сетке
+#	[+] добавлена привязка к локациям некоторых путей не на ai-сетке
 # 1.42:
 #	[+] fix LA DC spawn unpacking
 # 1.41:
@@ -1414,7 +1416,7 @@ use Cwd;
 #use diagnostics;
 $SIG{__WARN__} = sub {warn(@_);};
 
-my $VERSION = '1.43';
+my $VERSION = '1.44';
 
 # creating all_spawn object
 my $spawn = all_spawn->new();
